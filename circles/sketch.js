@@ -1,7 +1,7 @@
 function setup() {
-  createCanvas(640, 480);
+  createCanvas(window.innerWidth, window.innerHeight);
   drops = [];
-  colorMode(HSB, 255, 255, 255);
+  colorMode(HSB, 255, max_size(), 255);
   strokeWeight(2);
 }
 
@@ -14,7 +14,6 @@ function draw() {
     for(i = 0; i < drops.length; i++) {
         droplet(drops[i][0], drops[i][1], drops[i][2], drops[i][3]);
     }
-    waveSimple(80, 80, 50);
     if (frameCount % 20 == 0) {
         addWave();
     }
@@ -22,8 +21,8 @@ function draw() {
 }
 
 function popOld() {
-    while(drops.length != 0 && frameCount - drops[0][2] > 256) {
-        drops.shift()
+    while(drops.length != 0 && frameCount - drops[0][2] > max_size()) {
+        drops.shift();
     }
 }
 
@@ -35,17 +34,21 @@ function newDrop() {
 }
 
 function addWave() {
-    x = random(0, 640);
-    y = random(0, 480);
+    x = random(0, width);
+    y = random(0, height);
     c = random(0, 255);
     drops.push([x,y,frameCount, c]);
 }
 
 function droplet(x,y,start, color) {
-    stroke(color, 255 + start - frameCount, 255);
-    waveSimple(x,y,frameCount-start)
+    stroke(color, max_size() + start - frameCount, 255);
+    waveSimple(x,y,frameCount-start);
 }
 
 function waveSimple(x,y,r) {
     ellipse(x,y,r);
+}
+
+function max_size() {
+    return pow(width * height, 0.5) / 5 ;
 }
